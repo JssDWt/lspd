@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - releases
 
 env:
   LSPD_GO_VERSION: 1.21.0
