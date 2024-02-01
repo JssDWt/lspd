@@ -3,21 +3,32 @@ description: 'Build LSPD and upload the build artifacts.'
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - name: git checkout
+      uses: actions/checkout@v4
 
-    - name: Build LSPD
+    - name: get commit id
       run: |
-        go get github.com/breez/lspd
-        go get github.com/breez/lspd/cln_plugin
-        go build .
-        go build -o lspd_plugin ./cln_plugin/cmd
-      shell: bash
+        echo "COMMIT=$(git describe --tags --dirty)" >> $GITHUB_ENV
+        echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+    - name: build lspd
+      env:
+        PKG: github.com/breez/lspd
+      run: |
+        go get ${PKG}
+        go build -v -trimpath -o lspd -ldflags "-s -w -X ${PKG}/build.Commit=${COMMIT} -X ${PKG}/build.CommitHash=${COMMIT_HASH}" ${PKG}
+
+    - name: build cln plugin
+      env:
+        PKG: github.com/breez/lspd
+      run: |
+        go get ${PKG}/cln_plugin/cmd
+        go build -v -trimpath -o lspd_plugin -ldflags="-s -w -X ${PKG}/build.Commit=${COMMIT} -X ${PKG}/build.CommitHash=${COMMIT_HASH}" ${PKG}/cln_plugin/cmd
+
+    - name: upload lspd artifacts
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          ./lspd
-          ./lspd_plugin
+          lspd
+          lspd_plugin
