@@ -87,6 +87,8 @@ jobs:
         with:
           repository: breez/lnd
           ref: ${{ env.LND_REF }}
+
+      - name: fetch v* tags
         run: git fetch origin 'refs/tags/v*:refs/tags/v*' --no-tags
 
       - name: setup go ${{ env.LND_GO_VERSION }}
