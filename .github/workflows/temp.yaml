@@ -21,15 +21,11 @@ jobs:
         with:
           repository: breez/lnd
           ref: ${{ env.LND_REF }}
-
-      - name: fetch v* tags
-        run: |
-          git remote add upstream https://github.com/lightningnetwork/lnd
-          git fetch upstream '+refs/tags/v*:refs/tags/v*' --no-tags
+          fetch-depth: 0
 
       - name: get commit id
         run: |
-          echo "COMMIT=$(git describe --tags --dirty)" >> $GITHUB_ENV
+          echo "COMMIT=$(git describe --tags --dirt --match 'v*')" >> $GITHUB_ENV
           echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
       - name: print commit id
