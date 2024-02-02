@@ -57,13 +57,14 @@ jobs:
           go get ${PKG}/cln_plugin/cmd
           go build -v -trimpath -o lspd_cln_plugin -ldflags="-s -w -X ${PKG}/build.Commit=${COMMIT} -X ${PKG}/build.CommitHash=${COMMIT_HASH}" ${PKG}/cln_plugin/cmd
 
+      - name: zip lspd artifacts
+        run: tar -czvf lspd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz lspd lspd_cln_plugin
+
       - name: upload lspd artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: lspd-${{ matrix.os }}-${{ matrix.arch }}
-          path: |
-            lspd
-            lspd_cln_plugin
+          name: lspd
+          path: lspd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
 
   lnd:
     name: Release lnd
@@ -109,13 +110,14 @@ jobs:
           go build -v -trimpath -ldflags="-s -w -X ${PKG}/build.Commit=${COMMIT} -X ${PKG}/build.CommitHash=${COMMIT_HASH}" -tags="submarineswaprpc chanreservedynamic routerrpc walletrpc chainrpc signrpc invoicesrpc" ${PKG}/cmd/lnd
           go build -v -trimpath -ldflags="-s -w -X ${PKG}/build.Commit=${COMMIT} -X ${PKG}/build.CommitHash=${COMMIT_HASH}" -tags="submarineswaprpc chanreservedynamic routerrpc walletrpc chainrpc signrpc invoicesrpc" ${PKG}/cmd/lncli
 
+      - name: zip lnd artifacts
+        run: tar -czvf lnd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz lnd lncli
+
       - name: upload lnd artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: lnd-${{ matrix.os }}-${{ matrix.arch }}
-          path: |
-            lnd
-            lncli
+          name: lnd
+          path: lnd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
 
   release:
     needs:
@@ -129,7 +131,7 @@ jobs:
       - name: create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: '*'
+          artifacts: '**/*.gz'
           generateReleaseNotes: true
 
       
