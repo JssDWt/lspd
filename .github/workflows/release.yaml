@@ -129,7 +129,7 @@ jobs:
       - name: create release
         uses: ncipollo/release-action
         with:
-          artifacts: *
+          artifacts: '*'
           generateReleaseNotes: true
 
       
