@@ -23,6 +23,11 @@ jobs:
           ref: ${{ env.LND_REF }}
           fetch-depth: 0
 
+      - name: Fetch upstream tags
+        run: |
+          git remote add upstream https://github.com/lightningnetwork/lnd
+          git fetch upstream --tags
+
       - name: get commit id
         run: |
           echo "COMMIT=$(git describe --tags --dirty --match 'v*')" >> $GITHUB_ENV
