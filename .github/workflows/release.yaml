@@ -63,7 +63,7 @@ jobs:
       - name: upload lspd artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: lspd
+          name: lspd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}
           path: lspd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
 
   lnd:
@@ -116,7 +116,7 @@ jobs:
       - name: upload lnd artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: lnd
+          name: lnd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}
           path: lnd-${{ env.COMMIT }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
 
   release:
