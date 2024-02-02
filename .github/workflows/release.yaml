@@ -28,6 +28,7 @@ jobs:
     steps:
       - name: git checkout
         uses: actions/checkout@v4
+        fetch-depth: 0
 
       - name: setup go ${{ env.LSPD_GO_VERSION }}
         uses: actions/setup-go@v5
@@ -85,7 +86,7 @@ jobs:
         with:
           repository: breez/lnd
           ref: ${{ env.LND_REF }}
-      
+          fetch-depth: 0
 
       - name: setup go ${{ env.LND_GO_VERSION }}
         uses: actions/setup-go@v5
