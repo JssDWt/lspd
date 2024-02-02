@@ -23,7 +23,9 @@ jobs:
           ref: ${{ env.LND_REF }}
 
       - name: fetch v* tags
-        run: git fetch origin '+refs/tags/v*:refs/tags/v*' --no-tags
+        run: |
+          git remote add upstream https://github.com/lightningnetwork/lnd
+          git fetch upstream '+refs/tags/v*:refs/tags/v*' --no-tags
 
       - name: get commit id
         run: |
