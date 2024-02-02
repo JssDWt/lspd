@@ -1,0 +1,36 @@
+name: Release build
+
+on:
+  push:
+    branches:
+      - 'releases'
+
+env:
+  LSPD_GO_VERSION: 1.21.0
+  LND_GO_VERSION: 1.21.0
+  LND_REF: 0c939786ced78a981bd77c7da628bfcf86ada568
+  CLN_REF: v23.11.2
+
+jobs:
+  lnd:
+    name: Test get dirty tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout LND for LSP
+        uses: actions/checkout@v4
+        with:
+          repository: breez/lnd
+          ref: ${{ env.LND_REF }}
+
+      - name: fetch v* tags
+        run: git fetch origin '+refs/tags/v*:refs/tags/v*' --no-tags
+
+      - name: get commit id
+        run: |
+          echo "COMMIT=$(git describe --tags --dirty)" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: print commit id
+        run: |
+          echo ${COMMIT}
+          echo ${COMMIT_HASH}
